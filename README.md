@@ -190,7 +190,9 @@ Extract the ZIP archive to obtain:
 RF-MLD_Virtual Cameraman_2022-12-22_12-49-13.ldf
 ```
 
-An LDF file is a raw, continuous stream of RF samples with no inherent concept of disc sides. Whether this file contains one side or both depends entirely on how the capture was performed — some capturers record each side as a separate file, others record both consecutively into one. The filename carries no explicit "Side A/B" marker. Based on the decode output (~54,417 frames, ~30 minutes, ending when ld-decode reported reaching the Lead In signal), this capture appears to contain a single side — but verify against the original archive page or capture notes if this matters for your use case.
+An LDF file is a raw, continuous stream of RF samples with no inherent concept of disc sides. Whether a given file contains one side or both depends entirely on how the capture was performed.
+
+This particular disc is **physically single-sided**: Side 1 contains the programme, and the reverse bears the standard Japanese single-sided LD notice — "This is a single-sided disc. Please flip it over to use it" — indicating no playable content on that face. The archive.org item therefore contains a single LDF which is a **complete capture of the entire disc**. The two output files produced by this pipeline (`VC_prog1_final.mov` and `VC_prog2_final.mov`) together represent the full video content of the disc.
 
 ---
 
