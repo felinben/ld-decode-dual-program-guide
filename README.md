@@ -432,7 +432,7 @@ ld-chroma-decoder offers several NTSC decoder modes:
     VC.tbc - | \
 ffmpeg \
     -f yuv4mpegpipe -i - \
-    -f s16le -ar 44056 -ac 2 -i VC.pcm \
+    -f s16le -ar 44100 -ac 2 -i VC.pcm \
     -filter_complex "
         [0:v]il=l=d:c=d,split[o][e];
         [o]crop=iw:ih/2:0:0,scale=iw:ih*2:flags=neighbor,setsar=352/413[p1];
@@ -447,10 +447,10 @@ ffmpeg \
 **`-f yuv4mpegpipe -i -`**
 Reads a YUV4MPEG2 stream from stdin. The `-f yuv4mpegpipe` forces ffmpeg to parse stdin as y4m format (it cannot auto-detect format from a pipe). The y4m stream header carries resolution, frame rate, colour space, and field order.
 
-**`-f s16le -ar 44056 -ac 2 -i VC.pcm`**
+**`-f s16le -ar 44100 -ac 2 -i VC.pcm`**
 Opens the raw PCM audio file with explicit format parameters:
 - `-f s16le`: signed 16-bit little-endian samples
-- `-ar 44056`: sample rate of 44056 Hz (see Section 8.3)
+- `-ar 44100`: sample rate of 44100 Hz (see Section 8.3)
 - `-ac 2`: stereo (2 channels)
 
 ### 7.7 ffmpeg Output Options Explained
@@ -483,7 +483,7 @@ Both output files should have identical video specifications:
 | Field order | Progressive |
 | SAR | 75:88 (= 352:413 simplified) |
 | DAR | 7125:5368 ≈ 4:3 |
-| Audio | PCM s16le, 44056 Hz, mono |
+| Audio | PCM s16le, 44100 Hz, mono |
 | Duration | ~30 minutes |
 | File size | ~15 GB each |
 
@@ -512,7 +512,7 @@ These operations are very fast because the video is **stream-copied** (no re-enc
 # Assign left channel (c0) to prog1
 ffmpeg \
     -i VC_prog1.mov \
-    -f s16le -ar 44056 -ac 2 -i VC.pcm \
+    -f s16le -ar 44100 -ac 2 -i VC.pcm \
     -map 0:v -c:v copy \
     -map 1:a -af "pan=mono|c0=c0" -c:a pcm_s16le \
     VC_prog1_final.mov
@@ -520,7 +520,7 @@ ffmpeg \
 # Assign right channel (c1) to prog2
 ffmpeg \
     -i VC_prog2.mov \
-    -f s16le -ar 44056 -ac 2 -i VC.pcm \
+    -f s16le -ar 44100 -ac 2 -i VC.pcm \
     -map 0:v -c:v copy \
     -map 1:a -af "pan=mono|c0=c1" -c:a pcm_s16le \
     VC_prog2_final.mov
@@ -532,13 +532,9 @@ ffmpeg \
 
 If the audio does not match the video after this step, simply re-run the two commands with `c0=c0` and `c0=c1` swapped. The operation takes only seconds.
 
-### 8.3 Why 44056 Hz, Not 44100 Hz?
+### 8.3 Audio Sample Rate
 
-ld-decode outputs analog FM audio at **44056 Hz**, not the CD-standard 44100 Hz.
-
-The NTSC colour subcarrier frequency is 3.579545 MHz (= 315/88 MHz). ld-decode's audio sample rate is derived from this reference clock rather than from an independent crystal oscillator. 44056 Hz is the natural output rate given the NTSC timing relationships.
-
-Specifying `44100` instead of `44056` would introduce a **~0.1% speed/pitch error**. Over a 30-minute program this accumulates to approximately 1.8 seconds of audio drift. Always use `44056` for analog FM audio from ld-decode NTSC captures.
+ld-decode outputs analog FM audio at **44100 Hz** — the standard CD sample rate. This is the default value of the `--analog_audio_frequency` parameter in ld-decode and can be confirmed in the source (`lddecode/main.py`). It can be overridden on the command line if needed, but 44100 Hz is correct for the vast majority of captures.
 
 ### 8.4 EFM Digital Audio (Advanced, Optional)
 
@@ -622,7 +618,7 @@ The audio may have been assigned to the wrong channel, or both programs received
 
 ### Audio drifts out of sync over time
 
-The audio sample rate specified to ffmpeg (`-ar`) does not match the actual sample rate in the PCM file. Use exactly `44056` for ld-decode NTSC analog audio output.
+The audio sample rate specified to ffmpeg (`-ar`) does not match the actual sample rate in the PCM file. Use exactly `44100` for ld-decode NTSC analog audio output.
 
 ### Wrong aspect ratio (video appears stretched horizontally ~2× too wide)
 
