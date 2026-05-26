@@ -10,6 +10,12 @@
 
 1. [MLD Disc Structure — Where the Game Code Lives](#1-mld-disc-structure--where-the-game-code-lives)
 2. [Current Challenges — Towards an MMI for Ares](#2-current-challenges--towards-an-mmi-for-ares)
+   - [2.1 AnalogVideo — Why QON](#21-analogvideo--why-qon-not-a-standard-video-format)
+   - [2.2 AnalogVideo — Dual-Program Complication](#22-analogvideo--the-dual-program-complication)
+   - [2.3 AnalogAudio — Status](#23-analogaudio--status)
+   - [2.4 DigitalAudio — EFM Corruption in This Capture](#24-digitalaudio--efm-corruption-in-this-capture)
+   - [2.5 How to Do a Correct Capture](#25-how-to-do-a-correct-capture)
+   - [2.6 Summary of Open Questions](#26-summary-of-open-questions)
 
 ---
 
@@ -83,7 +89,50 @@ However, the EFM data in this particular archive.org capture is known to be **co
 
 The toolchain question (EFM → bin/cue) remains valid for future properly-captured MLD titles; it is documented as open below.
 
-### 2.5 Summary of Open Questions
+### 2.5 How to Do a Correct Capture
+
+The authoritative procedure for archiving LaserActive titles is documented by the Exodus emulator team at:
+
+```
+https://techdocs.exodusemulator.com/Console/PioneerLaserActive/Archiving.html
+```
+
+Key requirements for a capture that will yield a usable EFM track:
+
+**Hardware**
+
+| Item | Requirement |
+|------|-------------|
+| LaserDisc player | LD-V4300D, LD-V4400, or LD-V8000 |
+| Capture hardware | DomesDay Duplicator 3.0 (DE0-Nano FPGA + Cypress FX3) |
+| Player connection | Serial cable to PC (required for test mode control) |
+| RF connection | BNC cable from player test header |
+
+> **Critical:** The Pioneer CLD-A100/A200 (the LaserActive itself) **cannot be used** for RF capture — it has an interference design that risks physical damage to the capture hardware. A separate compatible player is required.
+
+The archive.org *Virtual Cameraman* capture was almost certainly made on a LaserActive, compounding the stop-code handling problem described in [Section 2.4](#24-digitalaudio--efm-corruption-in-this-capture).
+
+**Picture stop code handling**
+
+The correct procedure sends the serial command `1PS` to the player before capture to disable picture stop codes entirely, allowing uninterrupted playback from lead-in to lead-out. This is what preserves EFM integrity across the full disc.
+
+The broken approach — using the "Multi Fwd" button (or equivalent software bypass) to force the player past each stop code as it is encountered — repeatedly interrupts and resumes the EFM stream, corrupting the data at every loop point.
+
+**Capture procedure (summary)**
+
+1. Enter service/diagnostic mode via front panel or serial
+2. Enable open tracking (unstable still-frame mode)
+3. Seek backward to the innermost lead-in ring (~53 mm radius)
+4. Disable picture stop codes via serial command `1PS`
+5. Initiate DomesDay Duplicator capture (34 minutes for CAV, 64 minutes for CLV)
+6. Start playback in test mode; allow it to run to lead-out
+7. Repeat the full capture 5 times per disc side for error correction
+
+**Storage**
+
+A single CAV disc side produces approximately 150 GB of raw RF data. The Exodus guide recommends retaining the raw RF files permanently rather than relying on the decoded outputs alone.
+
+### 2.6 Summary of Open Questions
 
 | # | Question | Status |
 |---|----------|--------|
