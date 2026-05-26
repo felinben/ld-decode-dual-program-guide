@@ -81,9 +81,9 @@ The Pioneer LaserActive (CLD-A100/CLD-A200) was a hybrid LaserDisc/Mega Drive/PC
 
 LaserDiscs were mastered in one of two formats:
 
-- **CAV (Constant Angular Velocity)**: The disc rotates at a fixed speed (1800 rpm for NTSC). Each complete revolution stores exactly one video frame. This 1:1 relationship between revolution and frame enables still-frame, slow-motion, and random frame access — features used extensively by MLD and interactive titles. CAV discs hold up to 30 minutes of video per side.
+- **CAV (Constant Angular Velocity)**: The disc rotates at a fixed speed (1,800 rpm for NTSC; 1,500 rpm for PAL). Each complete revolution stores exactly one video frame. This 1:1 relationship between revolution and frame enables still-frame, slow-motion, and random frame access — features used extensively by MLD and interactive titles. CAV discs hold up to 30 minutes of video per side (36 minutes for PAL).
 
-- **CLV (Constant Linear Velocity)**: The disc spins faster near the centre and slower toward the edge, maintaining a constant track speed. This allows up to 60 minutes per side but loses the fixed frame-per-revolution relationship, making still-frame and random frame access impossible without special hardware.
+- **CLV (Constant Linear Velocity)**: The disc spins faster near the centre and slower toward the edge, maintaining a constant track speed. This allows up to 60 minutes per side for NTSC (64 minutes for PAL) but loses the fixed frame-per-revolution relationship, making still-frame and random frame access impossible without special hardware.
 
 You can distinguish the two formats visually by inspecting the disc surface under a light source:
 
@@ -99,7 +99,7 @@ The photograph below shows a CAV LaserDisc. The spoke pattern is clearly visible
 
 *Photo: [Autopilot](https://commons.wikimedia.org/wiki/File:Laserdisc_CAV.jpg), [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)*
 
-All MLD titles are NTSC. Most are CAV — the `"format"` field in MediaInfo.json (`"NTSC-CAV"` or `"NTSC-CLV"`) should reflect what you observe on the disc itself.
+All MLD titles are NTSC — the LaserActive was only sold in Japan and North America, both NTSC markets. Most MLD titles are CAV. The `"format"` field in MediaInfo.json (`"NTSC-CAV"` or `"NTSC-CLV"`) should reflect what you observe on the disc itself.
 
 ---
 
