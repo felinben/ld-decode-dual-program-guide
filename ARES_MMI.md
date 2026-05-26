@@ -106,6 +106,13 @@ The toolchain question (EFM → bin/cue) remains valid for future properly-captu
 
 Nemesis has confirmed (May 2026) that a working decode-to-MMI pipeline exists, but it currently relies on an unpublished EFM decoder and a modified version of `ld-analyse` that dumps frames as a PNG stack — neither in a state for general use. He intends to tidy these up and contribute changes back to the ld-decode toolchain so the pipeline can be properly reproduced by others. The Exodus techdocs [decoding section](https://techdocs.exodusemulator.com/Console/PioneerLaserActive/Archiving.html) is marked TODO and will document the official procedure when it is ready.
 
+A further update (May 2026) reports that a batch of new titles is ready to release, but two additional blockers have emerged:
+
+- **ares mainline audio desync**: A recent cdrom layer refactor introduced an audio sync regression for MegaLD titles. The issue is present in current mainline but not in the build hosted on his website. Nemesis intends to fix this before releasing new titles, as the regression makes testing against mainline unreliable.
+- **Emulation bugs under verification**: Two emulation bugs surfaced during testing of the new rips. One has been fixed; the second fix is complete but needs re-verification across all titles — work that depends on the audio sync issue being resolved first.
+
+Progress is temporarily paused due to personal commitments. Nemesis estimates at least another month before he can return to this. The toolchain and titles exist; it is a matter of timing.
+
 ### 2.5 How to Do a Correct Capture
 
 The authoritative procedure for archiving LaserActive titles is documented by the Exodus emulator team at:
