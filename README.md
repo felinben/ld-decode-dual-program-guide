@@ -21,13 +21,16 @@ The complete step-by-step pipeline from LDF source file to archival ProRes video
 ### 3. [Ares Emulator and the MMI Format](ARES_MMI.md)
 MLD disc structure, the MediaInfo.json stream layout, why QON is required over standard video formats, the EFM corruption in this particular capture, and the requirements for a correct future capture.
 
-## External Reference
+## External References
 
-The authoritative procedure for archiving LaserActive titles (hardware requirements, correct stop-code handling, capture workflow) is maintained by the Exodus emulator team:
+The Exodus emulator team maintains a comprehensive set of technical documentation for the LaserActive:
 
-```
-https://techdocs.exodusemulator.com/Console/PioneerLaserActive/Archiving.html
-```
+| Page | Content |
+|------|---------|
+| [Archiving](https://techdocs.exodusemulator.com/Console/PioneerLaserActive/Archiving.html) | Authoritative capture procedure: hardware requirements, stop-code handling, 5-pass workflow |
+| [LaserDisc](https://techdocs.exodusemulator.com/Console/PioneerLaserActive/Laserdisc.html) | Signal encoding, RF format details, selective interlacing, lead-in/out structure |
+| [Titles](https://techdocs.exodusemulator.com/Console/PioneerLaserActive/Titles.html) | Full MegaLD/LD-ROM² title catalogue with archive status and download links |
+| [Software](https://techdocs.exodusemulator.com/Console/PioneerLaserActive/Software.html) | Ares emulator, original Pioneer tools, and community tools by Nemesis |
 
 ---
 

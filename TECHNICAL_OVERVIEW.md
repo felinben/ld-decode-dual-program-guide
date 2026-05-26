@@ -72,6 +72,8 @@ A specialised player (or a player with a hardware switch) could select which fie
 
 When decoded naively — treating both fields as a normal interlaced pair — the result looks like severe combing: each "frame" contains one field from Program A interleaved with one field from Program B, creating a picture with half-resolution horizontal stripes of two completely different scenes. Correct extraction requires separating the two field sets entirely.
 
+The Exodus emulator technical documentation refers to this technique as **"selective interlacing"** — displaying only odd or even fields rather than the traditional interlaced pair — and notes it as a known archival challenge that standard capture hardware gets wrong, as it assumes conventional NTSC interlacing.
+
 ---
 
 ## 5. What Is the Pioneer LaserActive?

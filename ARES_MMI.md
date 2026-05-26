@@ -16,6 +16,10 @@
    - [2.4 DigitalAudio — EFM Corruption in This Capture](#24-digitalaudio--efm-corruption-in-this-capture)
    - [2.5 How to Do a Correct Capture](#25-how-to-do-a-correct-capture)
    - [2.6 Summary of Open Questions](#26-summary-of-open-questions)
+3. [Software and Tools](#3-software-and-tools)
+   - [3.1 Emulation](#31-emulation)
+   - [3.2 Original Tools](#32-original-tools)
+   - [3.3 Community Tools](#33-community-tools)
 
 ---
 
@@ -44,6 +48,17 @@ From the emulator's perspective:
 ## 2. Current Challenges — Towards an MMI for Ares
 
 The [ld-decode pipeline](LD_DECODE_PIPELINE.md) produces clean, archival-quality video files (`VC_prog1_final.mov`, `VC_prog2_final.mov`). Creating an MMI package for the [Ares emulator](https://ares-emu.net) requires a further conversion step for each of the three MMI streams. This section documents the known challenges and open questions as of the time of writing.
+
+**Catalogue IDs.** The Exodus title catalogue lists two *Virtual Cameraman* MegaLD titles for Japan:
+
+| Title | Catalogue ID |
+|-------|-------------|
+| Virtual Cameraman | PEASJ5015 |
+| Virtual Cameraman 2 | PEASJ5020 |
+
+The archive.org capture is confirmed as *Virtual Cameraman* **PEASJ5015** — this is the catalogue ID to use in MediaInfo.json.
+
+**Running Ares.** Before loading any MegaLD title, Ares requires BIOS files which are available from archive.org. Without them the emulator will not boot games regardless of MMI completeness.
 
 ### 2.1 AnalogVideo — Why QON, Not a Standard Video Format
 
@@ -140,6 +155,30 @@ A single CAV disc side produces approximately 150 GB of raw RF data. The Exodus 
 | 2 | Does the `AnalogAudio` stream expect stereo PCM or split mono files? | Open |
 | 3 | What is the correct toolchain and track layout for building a Redbook bin/cue from decoded EFM output? | Open (toolchain); **blocked on new capture** for this disc |
 | 4 | How are lead-in and lead-out frame counts determined for `framesInLeadInRegion` / `framesInLeadOutRegion` in MediaInfo.json — from `VC.tbc.db`, or counted manually? | Open |
+
+---
+
+## 3. Software and Tools
+
+### 3.1 Emulation
+
+**[Ares](https://ares-emu.net)** (Ares team; MegaLD/LD-ROM² support by Nemesis) is the primary — and currently only — emulator capable of running LaserActive titles. It supports both the Sega PAC (PAC-S1/S10) and NEC PAC (PAC-N1) variants and loads games via the `.mmi` (Mixed Media Image) format documented in this guide. BIOS files are required and are available from archive.org.
+
+### 3.2 Original Tools
+
+**PAC-PC1 Program Editor** (Pioneer) — the original SDK tool used by Pioneer and licensed developers to author MegaLD titles. Available via the Exodus techdocs [Software page](https://techdocs.exodusemulator.com/Console/PioneerLaserActive/Software.html).
+
+### 3.3 Community Tools
+
+All three community tools were developed by Nemesis (Ares author):
+
+**DumpMegaLD** — a Mode 1 MegaCD ROM that initialises the LaserDisc hardware from the PAC-S1/S10 and extracts full raw sector data and subcode from MegaLD/LD-ROM² discs. Now considered **obsolete** — RF capture via the DomesDay Duplicator produces a more complete and higher-quality source.
+
+**MegaLDRegEditor** — a Mode 1 MegaCD ROM for interactive reading and writing of the PD6103A IC register block. The PD6103A is the chip that bridges the MegaCD and LaserActive hardware, distinguishing the PAC-S1/S10 from a standard Mega Drive/MegaCD combination. Useful for low-level hardware research and debugging.
+
+**LDBIOS.INC** — reverse-engineered BIOS routine entry points for MegaLD systems in SDK-compatible format, with detailed notes on the PD6103A reverse-engineering effort. Now partially outdated; the most current information is in the Ares source code.
+
+All three are available from the Exodus techdocs [Software page](https://techdocs.exodusemulator.com/Console/PioneerLaserActive/Software.html).
 
 ---
 

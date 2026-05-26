@@ -120,6 +120,22 @@ The RF capture used in this manual is publicly archived at:
 https://archive.org/details/virtual-cameraman-pioneer-laseractive-discdump-hiresscans
 ```
 
+**Disc metadata:**
+
+| Field | Value |
+|-------|-------|
+| Title | Virtual Cameraman |
+| Catalogue ID | PEASJ5015 |
+| System | Pioneer LaserActive (Sega Mega LD) |
+| Region | Japan |
+| Year | 1993 |
+| Language | Japanese |
+| Capture date | 2022-12-22 |
+| Captured by | Tanks of Kineko Video |
+| Uploaded to archive.org | 2025-06-30 |
+
+The archive item also includes high-resolution disc and packaging scans (1200 DPI, 24-bit, Epson Expression 12000XL) of the box, manual, and disc surface.
+
 The LDF file can be downloaded directly from:
 
 ```
@@ -135,6 +151,8 @@ RF-MLD_Virtual Cameraman_2022-12-22_12-49-13.ldf
 An LDF file is a raw, continuous stream of RF samples with no inherent concept of disc sides. Whether a given file contains one side or both depends entirely on how the capture was performed.
 
 This particular disc is **physically single-sided**: Side 1 contains the programme, and the reverse bears the standard Japanese single-sided LD notice — "This is a single-sided disc. Please flip it over to use it" — indicating no playable content on that face. The archive.org item therefore contains a single LDF which is a **complete capture of the entire disc**. The two output files produced by this pipeline (`VC_prog1_final.mov` and `VC_prog2_final.mov`) together represent the full video content of the disc.
+
+> **Note on EFM integrity:** This capture was performed using DdD mode (forced resume past picture stop codes) rather than the recommended `1PS` serial command procedure. The analog video and audio decode cleanly, but the EFM digital track is corrupted at the stop-code loop points where the game code is stored. See [ARES_MMI.md](ARES_MMI.md) for details.
 
 ---
 
