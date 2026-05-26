@@ -19,7 +19,15 @@ Background concepts shared by both documents below: what an RF capture is, how l
 The complete step-by-step pipeline from LDF source file to archival ProRes video: RF decode, VBI processing, chroma decode, dual-program field separation, audio channel splitting, and troubleshooting. Two clean videos were successfully extracted from this capture.
 
 ### 3. [Ares Emulator and the MMI Format](ARES_MMI.md)
-MLD disc structure, the MediaInfo.json stream layout, why QON is required over standard video formats, and the current open questions on the path to a complete MMI package for Ares.
+MLD disc structure, the MediaInfo.json stream layout, why QON is required over standard video formats, the EFM corruption in this particular capture, and the requirements for a correct future capture.
+
+## External Reference
+
+The authoritative procedure for archiving LaserActive titles (hardware requirements, correct stop-code handling, capture workflow) is maintained by the Exodus emulator team:
+
+```
+https://techdocs.exodusemulator.com/Console/PioneerLaserActive/Archiving.html
+```
 
 ---
 
