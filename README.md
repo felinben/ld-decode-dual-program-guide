@@ -77,6 +77,30 @@ When decoded naively — treating both fields as a normal interlaced pair — th
 
 The Pioneer LaserActive (CLD-A100/CLD-A200) was a hybrid LaserDisc/Mega Drive/PC Engine console released in 1993. It played standard LaserDiscs as well as **MLD (Mega LaserDisc)** titles — LaserDiscs that contained game data or extended content accessible only through the console's add-on modules. The `RF-MLD_` prefix in the filename indicates this is an MLD disc captured from a LaserActive player.
 
+### 1.6 CAV vs CLV — Visual Identification
+
+LaserDiscs were mastered in one of two formats:
+
+- **CAV (Constant Angular Velocity)**: The disc rotates at a fixed speed (1800 rpm for NTSC). Each complete revolution stores exactly one video frame. This 1:1 relationship between revolution and frame enables still-frame, slow-motion, and random frame access — features used extensively by MLD and interactive titles. CAV discs hold up to 30 minutes of video per side.
+
+- **CLV (Constant Linear Velocity)**: The disc spins faster near the centre and slower toward the edge, maintaining a constant track speed. This allows up to 60 minutes per side but loses the fixed frame-per-revolution relationship, making still-frame and random frame access impossible without special hardware.
+
+You can distinguish the two formats visually by inspecting the disc surface under a light source:
+
+- **CAV discs** show prominent radial streaks — "spokes" — radiating outward from the hub. These appear because every adjacent track shares the same angular frame-start position, creating a consistent radial zone of slightly different reflectivity across the entire playing area.
+
+- **CLV discs** have a uniform, smooth iridescent appearance with no radial patterning. The track is a true continuous spiral with no fixed angular frame boundaries.
+
+![CAV vs CLV diagram](cav_clv_diagram.svg)
+
+The photograph below shows a CAV LaserDisc. The spoke pattern is clearly visible as bright radial streaks in the iridescent reflection. Note the disc label explicitly reads "(CAV)":
+
+![CAV LaserDisc showing spoke pattern](Laserdisc_CAV.jpg)
+
+*Photo: [Autopilot](https://commons.wikimedia.org/wiki/File:Laserdisc_CAV.jpg), [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)*
+
+All MLD titles are NTSC. Most are CAV — the `"format"` field in MediaInfo.json (`"NTSC-CAV"` or `"NTSC-CLV"`) should reflect what you observe on the disc itself.
+
 ---
 
 ## 2. Prerequisites
