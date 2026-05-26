@@ -112,32 +112,36 @@ The authoritative procedure for archiving LaserActive titles is documented by th
 https://techdocs.exodusemulator.com/Console/PioneerLaserActive/Archiving.html
 ```
 
-#### Why the Archive.org Capture Falls Short — A Beginner's Guide
+#### Understanding the Tools — A Beginner's Guide
 
-If you are new to LaserDisc preservation, it helps to understand the different ways a LaserDisc can be captured and why they produce very different results for MLD titles specifically.
+Before getting into the correct procedure it helps to understand what the various tools actually are, since they are often mentioned together and can be confused.
 
-**Capture method comparison**
+**DomesDay Duplicator (DdD)** is an FPGA-based hardware capture board developed by the Domesday86 project. It connects to a LaserDisc player's test header via BNC cable and records the raw FM signal at 40 Msps, producing an LDF file. It is the standard hardware for LaserDisc RF capture, and it is what Tanks of Kineko Video used to make the *Virtual Cameraman* archive.org item.
 
-| | Composite video capture | RF capture (incorrect) | RF capture (correct) |
-|---|---|---|---|
-| **Example** | Tanks of Kineko Video (typical service) | Archive.org capture (DdD mode) | Community method (DomesDay Duplicator + `1PS`) |
-| **Signal tap point** | Composite output — *after* the player's internal circuits | Raw RF signal — *before* demodulation | Raw RF signal — *before* demodulation |
-| **Player used** | Any player | Likely CLD-A100 (LaserActive itself) | LD-V4300D, LD-V4400, or LD-V8000 |
-| **Stop code handling** | Player stops; operator resumes manually | DdD mode: software forces resume repeatedly | `1PS` serial command disables stop codes entirely |
-| **Analog video quality** | Limited by player's aging circuits | ✓ Full quality (raw RF) | ✓ Full quality (raw RF) |
-| **EFM / game code** | ✗ Not captured at all | ✗ Corrupted at every stop-code loop point | ✓ Intact across full disc |
-| **Reprocessable later** | ✗ No — locked to player's demodulation | ✓ Yes — raw signal can be re-decoded | ✓ Yes — raw signal can be re-decoded |
-| **Suitable for MMI** | ✗ No | ✗ No (game code unusable) | ✓ Yes |
+**Tanks of Kineko Video** is a professional Japanese video transfer service — not a tool. They performed the capture using the DomesDay Duplicator and uploaded the result to archive.org.
 
-**What Tanks of Kineko Video is**
+**DumpMegaLD** is a MegaCD ROM (software) written by Nemesis that runs on the LaserActive itself and uses the PAC-S1 hardware to read digital sector data directly off an MLD disc. It predates RF capture and is now considered obsolete — the DomesDay Duplicator approach produces a more complete result.
 
-Tanks of Kineko Video is a professional Japanese video transfer service that specialises in converting analog formats to digital files. For standard LaserDisc titles — films, concerts, archive footage — their composite video transfers are perfectly adequate and widely used for preservation. The *Virtual Cameraman* archive.org item was captured in LDF format (raw RF), which shows an awareness of RF capture methodology. However, the stop-code handling used (DdD mode — forcing the player to resume past picture stop codes repeatedly) is appropriate for standard LaserDiscs but is destructive for MLD titles, where stop codes are control points used by the game code and the EFM stream must remain uninterrupted to preserve the data tracks.
+**MegaLDRegEditor** is also a MegaCD ROM by Nemesis, but it is not a capture tool at all. It is a diagnostic utility for reading and writing registers on the PD6103A IC — the chip that bridges the MegaCD and the LaserDisc mechanism — used for hardware research and development.
 
-This is not a criticism of the service in general — the requirement to disable stop codes via serial (`1PS`) before capture is MLD-specific and not widely documented outside specialist communities. For any future capture of MLD titles, the community procedure below should be followed.
+---
 
-**Key takeaway for beginners**
+The archive.org capture and a correct capture both use the same hardware (DomesDay Duplicator) and tap the same raw RF signal. The entire difference comes down to two things: **player choice** and **how picture stop codes are handled**.
 
-An RF capture is always preferable to a composite capture. But for MLD titles specifically, an RF capture is only useful for emulation if the EFM track is intact — and that requires the `1PS` procedure on a compatible player. An RF capture made with DdD mode gives you clean video and audio (useful for the pipeline in this guide) but unusable game code.
+MLD discs embed picture stop codes at points where the game needs to pause the disc and interact with the player hardware. The EFM stream — which carries the game code — must remain uninterrupted across these points. The DomesDay Duplicator offers two ways to deal with them:
+
+| | Archive.org capture | Correct procedure |
+|---|---|---|
+| **Who performed it** | Tanks of Kineko Video | — |
+| **Capture hardware** | DomesDay Duplicator | DomesDay Duplicator |
+| **Player** | Likely CLD-A100 (LaserActive itself) ✗ | LD-V4300D, LD-V4400, or LD-V8000 ✓ |
+| **Stop code handling** | DdD mode — forces player to resume repeatedly ✗ | `1PS` serial command — disables stop codes before playback ✓ |
+| **Analog video / audio** | ✓ Clean — this guide's pipeline works | ✓ Clean |
+| **EFM / game code** | ✗ Corrupted at every stop-code loop point | ✓ Intact across full disc |
+| **Suitable for video archive** | ✓ Yes | ✓ Yes |
+| **Suitable for MMI / emulation** | ✗ No — game code unusable | ✓ Yes |
+
+The `1PS` serial command requirement is MLD-specific and not widely known outside the specialist community. This was a knowledge gap, not negligence on the part of Tanks of Kineko Video.
 
 ---
 
