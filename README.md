@@ -101,6 +101,26 @@ The photograph below shows a CAV LaserDisc. The spoke pattern is clearly visible
 
 All MLD titles are NTSC — the LaserActive was only sold in Japan and North America, both NTSC markets. Most MLD titles are CAV. The `"format"` field in MediaInfo.json (`"NTSC-CAV"` or `"NTSC-CLV"`) should reflect what you observe on the disc itself.
 
+### 1.7 MLD Disc Structure — Where the Game Code Lives
+
+An MLD disc carries three distinct content types, which map directly to the three streams in MediaInfo.json:
+
+| Stream | Type | Content |
+|--------|------|---------|
+| `AnalogVideo` | QON | FMV frames (frame-addressable video) |
+| `AnalogAudio` | Raw PCM | Analog FM stereo audio |
+| `DigitalAudio` | Redbook bin/cue | Game code **and** digital audio |
+
+The `DigitalAudio` label is slightly misleading. A Redbook bin/cue is not just audio — it is a complete CD disc image, and CD images can contain **data tracks** (Mode 1 or Mode 2/XA) alongside audio tracks. On an MLD disc the EFM digital track is a mixed disc: the data tracks carry the Mega Drive or PC Engine game ROM and assets; the audio tracks carry the digital stereo soundtrack.
+
+The LaserActive's add-on module (Mega Drive PAC-S1 or PC Engine PAC-N1) reads the game code from those data tracks exactly as it would from a normal Mega CD or PC Engine CD-ROM disc. There is no separate "code" stream in the MMI JSON because the bin/cue is already the complete disc image that the emulator's CD-ROM layer consumes.
+
+From the emulator's perspective:
+
+- **QON** → video renderer (frame-addressable, required for sync'd FMV, reverse playback, and still-frame)
+- **PCM** → analog audio output
+- **bin/cue** → CD-ROM drive emulation (game logic, data assets, and digital audio tracks)
+
 ---
 
 ## 2. Prerequisites
