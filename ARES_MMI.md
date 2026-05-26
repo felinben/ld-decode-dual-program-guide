@@ -104,6 +104,8 @@ However, the EFM data in this particular archive.org capture is known to be **co
 
 The toolchain question (EFM → bin/cue) remains valid for future properly-captured MLD titles; it is documented as open below.
 
+Nemesis has confirmed (May 2026) that a working decode-to-MMI pipeline exists, but it currently relies on an unpublished EFM decoder and a modified version of `ld-analyse` that dumps frames as a PNG stack — neither in a state for general use. He intends to tidy these up and contribute changes back to the ld-decode toolchain so the pipeline can be properly reproduced by others. The Exodus techdocs [decoding section](https://techdocs.exodusemulator.com/Console/PioneerLaserActive/Archiving.html) is marked TODO and will document the official procedure when it is ready.
+
 ### 2.5 How to Do a Correct Capture
 
 The authoritative procedure for archiving LaserActive titles is documented by the Exodus emulator team at:
@@ -184,7 +186,7 @@ A single CAV disc side produces approximately 150 GB of raw RF data. The Exodus 
 |---|----------|--------|
 | 1 | Should the QON contain raw interleaved fields or pre-separated per-program streams? | Open — pending Ares team input |
 | 2 | Does the `AnalogAudio` stream expect stereo PCM or split mono files? | Open |
-| 3 | What is the correct toolchain and track layout for building a Redbook bin/cue from decoded EFM output? | Open (toolchain); **blocked on new capture** for this disc |
+| 3 | What is the correct toolchain and track layout for building a Redbook bin/cue from decoded EFM output? | Open (toolchain); **blocked on new capture** for this disc. A working pipeline exists (Nemesis, May 2026) but is not yet publicly documented — upstream contributions to ld-decode are planned. |
 | 4 | How are lead-in and lead-out frame counts determined for `framesInLeadInRegion` / `framesInLeadOutRegion` in MediaInfo.json — from `VC.tbc.db`, or counted manually? | Open |
 
 ---
