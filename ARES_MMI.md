@@ -63,7 +63,7 @@ This question is currently unresolved and is being discussed with the Ares devel
 
 The analog audio source (`VC.pcm`) is already in the correct format for the `AnalogAudio` MMI stream: raw s16le PCM, 44100 Hz, stereo. No conversion is required beyond confirming the channel-to-program mapping (left channel → one program, right channel → the other) and whether the MMI expects a split mono file or the full stereo PCM.
 
-### 2.4 DigitalAudio — EFM to Redbook bin/cue
+### 2.4 DigitalAudio — EFM Corruption in This Capture
 
 The digital audio pipeline as far as WAV is documented in [LD_DECODE_PIPELINE.md Section 7.4](LD_DECODE_PIPELINE.md#74-efm-digital-audio-advanced-optional):
 
@@ -71,7 +71,17 @@ The digital audio pipeline as far as WAV is documented in [LD_DECODE_PIPELINE.md
 VC.efm → efm-decoder-f2 → VC.f2 → efm-decoder-audio → VC_digital.wav
 ```
 
-What remains undocumented is the step from `VC_digital.wav` to a properly structured **Redbook bin/cue** suitable for the `DigitalAudio` MMI stream. For a standard MLD title this bin/cue is a mixed disc image: data tracks carry the game ROM and assets, audio tracks carry the digital soundtrack. The correct toolchain and track layout for assembling this from the decoded EFM output has not yet been established for this disc.
+However, the EFM data in this particular archive.org capture is known to be **corrupted at the locations that store the game code**. Nemesis (Ares emulator author) examined this capture and reported the following (18 August 2025):
+
+> *"I had a go at converting the virtual cameraman ldf rip that's on archive.org, but the rip wasn't done properly. They just ran the DdD mode that pushes through picture stop codes by repeatedly forcing the player to resume every time it stops. Sure that gets a picture out, but it corrupts the EFM at the point where it loops, which is where the digital data stores the game code, so it's scrambled and unusable."*
+
+**What this means in practice:**
+
+- The **analog video** and **analog audio** extractions documented in [LD_DECODE_PIPELINE.md](LD_DECODE_PIPELINE.md) are unaffected — they do not rely on the EFM track.
+- The `VC.efm` file from this capture contains corrupted data at the picture-stop-code loop points. Decoding it will produce a WAV file, but the game code data tracks within the EFM are scrambled and cannot be used to build a working bin/cue.
+- A complete MMI package for *Virtual Cameraman* requires a **new RF capture** performed without DdD mode — one that allows the disc to be read past picture stop codes without forcing repeated resumes.
+
+The toolchain question (EFM → bin/cue) remains valid for future properly-captured MLD titles; it is documented as open below.
 
 ### 2.5 Summary of Open Questions
 
@@ -79,7 +89,7 @@ What remains undocumented is the step from `VC_digital.wav` to a properly struct
 |---|----------|--------|
 | 1 | Should the QON contain raw interleaved fields or pre-separated per-program streams? | Open — pending Ares team input |
 | 2 | Does the `AnalogAudio` stream expect stereo PCM or split mono files? | Open |
-| 3 | What is the correct toolchain and track layout for building a Redbook bin/cue from the decoded EFM output? | Open |
+| 3 | What is the correct toolchain and track layout for building a Redbook bin/cue from decoded EFM output? | Open (toolchain); **blocked on new capture** for this disc |
 | 4 | How are lead-in and lead-out frame counts determined for `framesInLeadInRegion` / `framesInLeadOutRegion` in MediaInfo.json — from `VC.tbc.db`, or counted manually? | Open |
 
 ---
