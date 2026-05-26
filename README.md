@@ -16,6 +16,7 @@
 9. [Step 5 — Cleanup](#9-step-5--cleanup)
 10. [Final File Inventory](#10-final-file-inventory)
 11. [Troubleshooting](#11-troubleshooting)
+12. [Current Challenges — Towards an MMI for Ares](#12-current-challenges--towards-an-mmi-for-ares)
 
 ---
 
@@ -694,6 +695,55 @@ tmutil deletelocalsnapshots /
 ```
 
 to immediately release snapshot-held space.
+
+---
+
+## 12. Current Challenges — Towards an MMI for Ares
+
+The pipeline described in this manual produces clean, archival-quality video files (`VC_prog1_final.mov`, `VC_prog2_final.mov`). Creating an MMI package for the [Ares emulator](https://ares-emu.net) requires a further conversion step for each of the three MMI streams. This section documents the known challenges and open questions as of the time of writing.
+
+### 12.1 AnalogVideo — Why QON, Not a Standard Video Format
+
+A natural question is: why not use the ProRes `.mov` files produced by this pipeline directly as the video stream?
+
+The answer is frame addressability. Ares cannot use standard video container formats (MOV, MP4, MKV, etc.) for LaserDisc video because those formats are built around sequential playback. Their codecs use inter-frame compression — P-frames and B-frames that encode only the *difference* from neighbouring frames — which means decoding any given frame requires first decoding the frames before it. That is fundamentally incompatible with how a LaserDisc player operates: the hardware must be able to jump instantly to any arbitrary frame number, freeze on a single frame indefinitely, and play backwards or at variable speed. Games such as *Rocket Coaster* exercise all of these capabilities continuously during gameplay.
+
+The **QON format** (from [github.com/RogerSanders/qon](https://github.com/RogerSanders/qon), a LaserActive-specialised fork of the QOI image format) solves this by storing every frame as an independently compressed, individually addressable unit — effectively a flat array of frames with no inter-frame dependencies. Any frame can be sought to and decoded in isolation, in constant time.
+
+The source for the QON encode is the TBC file (`VC.tbc`), not the finished `.mov` files. The `.mov` files have already had the dual-program fields separated and scan-doubled; the TBC contains the raw interlaced output of ld-decode, closer to what the original hardware would have read off the disc.
+
+### 12.2 AnalogVideo — The Dual-Program Complication
+
+*Virtual Cameraman* is a dual-program disc: odd fields carry Program A and even fields carry Program B. This raises an open question for the QON stream:
+
+**Should the QON contain the raw interleaved frames as they appear in the TBC (both programs on alternating fields), or should it contain two separate QON files — one per program?**
+
+The answer depends on how the LaserActive hardware (and therefore the Ares emulator) selects between programs. If the hardware simply plays back the raw field stream and the add-on module selects odd or even fields at display time, the QON should contain the unmodified interleaved output of ld-chroma-decoder. If the hardware or software expects pre-separated streams, two QON files would be needed.
+
+This question is currently unresolved and is being discussed with the Ares development team.
+
+### 12.3 AnalogAudio — Status
+
+The analog audio source (`VC.pcm`) is already in the correct format for the `AnalogAudio` MMI stream: raw s16le PCM, 44100 Hz, stereo. No conversion is required beyond confirming the channel-to-program mapping (left channel → one program, right channel → the other) and whether the MMI expects a split mono file or the full stereo PCM.
+
+### 12.4 DigitalAudio — EFM to Redbook bin/cue
+
+The digital audio pipeline as far as WAV is documented in [Section 8.4](#84-efm-digital-audio-advanced-optional):
+
+```
+VC.efm → efm-decoder-f2 → VC.f2 → efm-decoder-audio → VC_digital.wav
+```
+
+What remains undocumented is the step from `VC_digital.wav` to a properly structured **Redbook bin/cue** suitable for the `DigitalAudio` MMI stream. For a standard MLD title this bin/cue is a mixed disc image: data tracks carry the game ROM and assets, audio tracks carry the digital soundtrack. The correct toolchain and track layout for assembling this from the decoded EFM output has not yet been established for this disc.
+
+### 12.5 Summary of Open Questions
+
+| # | Question | Status |
+|---|----------|--------|
+| 1 | Should the QON contain raw interleaved fields or pre-separated per-program streams? | Open — pending Ares team input |
+| 2 | Does the `AnalogAudio` stream expect stereo PCM or split mono files? | Open |
+| 3 | What is the correct toolchain and track layout for building a Redbook bin/cue from the decoded EFM output? | Open |
+| 4 | How are lead-in and lead-out frame counts determined for `framesInLeadInRegion` / `framesInLeadOutRegion` in MediaInfo.json — from `VC.tbc.db`, or counted manually? | Open |
 
 ---
 
