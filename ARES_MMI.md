@@ -12,10 +12,11 @@
 2. [Current Challenges — Towards an MMI for ares](#2-current-challenges--towards-an-mmi-for-ares)
    - [2.1 AnalogVideo — Why QON](#21-analogvideo--why-qon-not-a-standard-video-format)
    - [2.2 AnalogVideo — Dual-Program Complication](#22-analogvideo--the-dual-program-complication)
-   - [2.3 AnalogAudio — Status](#23-analogaudio--status)
-   - [2.4 DigitalAudio — EFM Corruption in This Capture](#24-digitalaudio--efm-corruption-in-this-capture)
-   - [2.5 How to Do a Correct Capture](#25-how-to-do-a-correct-capture)
-   - [2.6 Summary of Open Questions](#26-summary-of-open-questions)
+   - [2.3 AnalogVideo — Native Resolution](#23-analogvideo--native-resolution)
+   - [2.4 AnalogAudio — Status](#24-analogaudio--status)
+   - [2.5 DigitalAudio — EFM Corruption in This Capture](#25-digitalaudio--efm-corruption-in-this-capture)
+   - [2.6 How to Do a Correct Capture](#26-how-to-do-a-correct-capture)
+   - [2.7 Summary of Open Questions](#27-summary-of-open-questions)
 3. [Software and Tools](#3-software-and-tools)
    - [3.1 Emulation](#31-emulation)
    - [3.2 Original Tools](#32-original-tools)
@@ -80,11 +81,29 @@ The answer depends on how the LaserActive hardware (and therefore the ares emula
 
 This question is currently unresolved and is being discussed with the ares development team.
 
-### 2.3 AnalogAudio — Status
+### 2.3 AnalogVideo — Native Resolution
+
+The two `.mov` files produced by the pipeline are 760 × 488. This is the output resolution of `ld-chroma-decoder`, not the native display resolution of the LaserActive hardware.
+
+**What the CLD-A100 actually displayed**
+
+The CLD-A100 outputs standard NTSC video to a CRT television. NTSC is analog — there is no pixel grid. Horizontal resolution is determined by signal bandwidth. LaserDisc carries approximately 5 MHz of video bandwidth, corresponding to roughly 560 pixels of horizontal detail at the NTSC line rate. Combined with 480 active vertical lines, the effective resolution experienced on real hardware was approximately **560 × 480** — the figure widely cited in the emulation community as the LaserDisc native resolution.
+
+**Why the pipeline produces 760 × 488**
+
+`ld-chroma-decoder` samples the TBC at 910 samples per line and trims blanking to 760 active pixels, with 488 lines including a few above and below the 480 active NTSC lines. This is an oversampled decode: it captures more horizontal detail than the analog signal bandwidth strictly requires. The extra samples are not fabricated — they contain genuine signal content — but they exceed what the original CRT could resolve and display.
+
+**Implications for emulation**
+
+Rendering at 760 × 488 is faithful to the decoded signal; rendering at 560 × 480 is more faithful to the original viewing experience on real hardware. These are different goals: archival fidelity versus hardware authenticity. For a fully convincing CRT-accurate presentation, the display resolution question is inseparable from scanline and phosphor simulation — a correctly-scaled 560 × 480 image on a modern flat panel will not look like the original hardware without additional post-processing.
+
+This is an active area of debate in the emulation community. The correct internal resolution for ares and its relationship to the QON source is part of the broader design question currently being discussed with the ares development team.
+
+### 2.4 AnalogAudio — Status
 
 The analog audio source (`VC.pcm`) is already in the correct format for the `AnalogAudio` MMI stream: raw s16le PCM, 44100 Hz, stereo. No conversion is required beyond confirming the channel-to-program mapping (left channel → one program, right channel → the other) and whether the MMI expects a split mono file or the full stereo PCM.
 
-### 2.4 DigitalAudio — EFM Corruption in This Capture
+### 2.5 DigitalAudio — EFM Corruption in This Capture
 
 The digital audio pipeline as far as WAV is documented in [LD_DECODE_PIPELINE.md Section 7.4](LD_DECODE_PIPELINE.md#74-efm-digital-audio-advanced-optional):
 
@@ -113,7 +132,7 @@ A further update (May 2026) reports that a batch of new titles is ready to relea
 
 Progress is temporarily paused due to personal commitments. Nemesis estimates at least another month before he can return to this. The toolchain and titles exist; it is a matter of timing.
 
-### 2.5 How to Do a Correct Capture
+### 2.6 How to Do a Correct Capture
 
 The authoritative procedure for archiving LaserActive titles is documented by the Exodus emulator team at:
 
@@ -187,7 +206,7 @@ The broken approach — using the "Multi Fwd" button (or equivalent software byp
 
 A single CAV disc side produces approximately 150 GB of raw RF data. The Exodus guide recommends retaining the raw RF files permanently rather than relying on the decoded outputs alone.
 
-### 2.6 Summary of Open Questions
+### 2.7 Summary of Open Questions
 
 | # | Question | Status |
 |---|----------|--------|

@@ -298,7 +298,7 @@ This is the most technically complex step. It pipes the output of `ld-chroma-dec
 - **Frame rate**: 29.97 fps
 - **Field order**: Top field first (TFF)
 
-The resolution (760 × 488) is slightly wider than the broadcast-standard 720 × 480, to include some horizontal overscan area from the disc.
+The resolution (760 × 488) is slightly wider than the broadcast-standard 720 × 480, to include some horizontal overscan area from the disc. This is an oversampled decode — it does not represent the native display resolution of the LaserActive hardware. See [ARES_MMI.md Section 2.3](ARES_MMI.md#23-analogvideo--native-resolution) for discussion of native resolution and its emulation implications.
 
 ### 6.2 Understanding the Interlacing Problem
 
